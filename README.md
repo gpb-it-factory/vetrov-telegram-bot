@@ -19,7 +19,6 @@ participant "middle" as middle
 participant "backend" as backend
 
 user -> frontend : Взаимодействие с ботом
-activate user
 activate frontend
 
 frontend -> middle : HTTP запрос
