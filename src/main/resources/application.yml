@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: MiniBankTelegramBot
+server:
+  port: 8080
+
+bot:
+  name: MiniBankTelegramBot
+  token: ${BOT_TOKEN}
