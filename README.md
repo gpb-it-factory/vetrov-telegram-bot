@@ -42,3 +42,19 @@ deactivate frontend
 deactivate user
 @enduml
 ```
+
+# Использование
+>Список доступных команд:
+>- /start
+>- /ping
+
+# Локальный запуск (gradle)
+>Windows:
+>```cmd
+>gradlew.bat bootRun --args='--bot.token={ваш токен}'
+>```
+
+>Linux:
+>```bash
+>./gradlew bootRun --args='--bot.token={ваш токен}'
+>```
