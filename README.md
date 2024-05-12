@@ -45,10 +45,10 @@ deactivate user
 
 # Использование
 >Список доступных команд:
->- /start
->- /ping
+>- /start - Приветственное сообщение
+>- /ping - Получение ответного pong 
 
-# Локальный запуск (gradle)
+# Локальный запуск
 >Windows:
 >```cmd
 >gradlew.bat bootRun --args='--bot.token={ваш токен}'
@@ -57,4 +57,10 @@ deactivate user
 >Linux:
 >```bash
 >./gradlew bootRun --args='--bot.token={ваш токен}'
+>```
+
+>Docker:
+>```bash
+>docker build -t tgbot .
+>docker run --name tgbot -d -e BOT_TOKEN='<ваш токен>' tgbot
 >```

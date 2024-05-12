@@ -1,4 +1,4 @@
-package ru.omon4412.minibank;
+package ru.omon4412.minibank.bot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.omon4412.minibank.bot.MiniBankBot;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +23,7 @@ public class Initializer {
             log.info("Telegram bot запущен");
         } catch (TelegramApiException e) {
             log.error("Ошибка при запуске бота: " + e.getMessage());
+            System.exit(1);
         }
     }
 }
