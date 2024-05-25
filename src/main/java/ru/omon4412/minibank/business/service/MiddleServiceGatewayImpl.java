@@ -8,7 +8,7 @@ import ru.omon4412.minibank.business.dto.UserResponseDto;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class MiddleServiceGatewayGatewayImpl implements MiddleServiceGateway {
+public class MiddleServiceGatewayImpl implements MiddleServiceGateway {
     private final MiddleServiceClient middleServiceClient;
 
     @Override

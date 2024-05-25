@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.omon4412.minibank.client.MiddleServiceClient;
 import ru.omon4412.minibank.business.command.CommandHandler;
 import ru.omon4412.minibank.business.service.MessageServiceImpl;
-import ru.omon4412.minibank.business.service.MiddleServiceGatewayGatewayImpl;
+import ru.omon4412.minibank.business.service.MiddleServiceGatewayImpl;
 
 @Component
 @Slf4j
@@ -23,7 +23,7 @@ public class MiniBankBot extends TelegramLongPollingBot {
         super(botToken);
         this.botUsername = botUsername;
         this.commandHandler = new CommandHandler(new MessageServiceImpl(this),
-                new MiddleServiceGatewayGatewayImpl(middleServiceClient));
+                new MiddleServiceGatewayImpl(middleServiceClient));
     }
 
     @Override
