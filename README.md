@@ -10,6 +10,8 @@
 - `backend`: Java сервис. Принимает запросы от middle-сервиса. Выступает в качестве АБС (автоматизированная банковская система), обрабатывает транзакции, хранит клиентские данные и т. д.
 
 ## Схема взаимодействия компонентов
+<img src="img/scheme.png" alt="Схема взаимодействия компонентов">
+
 ```plantuml
 @startuml
 
@@ -64,3 +66,8 @@ deactivate user
 >docker build -t tgbot .
 >docker run --name tgbot -d -e BOT_TOKEN='<ваш токен>' tgbot
 >```
+
+## Автор
+>**Ветров Сергей**
+>- [GitHub](https://github.com/omon4412)
+>- [Email](mailto:vetrov241201@yandex.ru)
