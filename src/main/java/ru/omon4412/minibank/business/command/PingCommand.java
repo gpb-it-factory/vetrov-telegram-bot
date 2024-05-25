@@ -1,8 +1,8 @@
-package ru.omon4412.minibank.command;
+package ru.omon4412.minibank.business.command;
 
 import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.omon4412.minibank.service.MessageService;
+import ru.omon4412.minibank.business.service.MessageService;
 
 @RequiredArgsConstructor
 class PingCommand implements Command {

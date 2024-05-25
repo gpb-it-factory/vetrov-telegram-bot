@@ -1,4 +1,4 @@
-package ru.omon4412.minibank.bot;
+package ru.omon4412.minibank.business.bot;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.omon4412.minibank.command.CommandHandler;
-import ru.omon4412.minibank.service.MessageServiceImpl;
+import ru.omon4412.minibank.client.MiddleServiceClient;
+import ru.omon4412.minibank.business.command.CommandHandler;
+import ru.omon4412.minibank.business.service.MessageServiceImpl;
+import ru.omon4412.minibank.business.service.MiddleServiceGatewayGatewayImpl;
 
 @Component
 @Slf4j
@@ -16,10 +18,12 @@ public class MiniBankBot extends TelegramLongPollingBot {
     private final CommandHandler commandHandler;
 
     @Autowired
-    public MiniBankBot(@Value("${bot.name}") String botUsername, @Value("${bot.token}") String botToken) {
+    public MiniBankBot(@Value("${bot.name}") String botUsername, @Value("${bot.token}") String botToken,
+                       MiddleServiceClient middleServiceClient) {
         super(botToken);
         this.botUsername = botUsername;
-        this.commandHandler = new CommandHandler(new MessageServiceImpl(this));
+        this.commandHandler = new CommandHandler(new MessageServiceImpl(this),
+                new MiddleServiceGatewayGatewayImpl(middleServiceClient));
     }
 
     @Override
