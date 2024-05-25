@@ -1,11 +1,11 @@
-package ru.omon4412.minibank.service;
+package ru.omon4412.minibank.business.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.omon4412.minibank.bot.MiniBankBot;
+import ru.omon4412.minibank.business.bot.MiniBankBot;
 
 @Service
 @RequiredArgsConstructor
