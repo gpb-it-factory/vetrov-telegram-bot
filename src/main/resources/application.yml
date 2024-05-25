@@ -1,9 +1,8 @@
 spring:
   application:
     name: MiniBankTelegramBot
-
-server:
-  port: 8081
+  main:
+    web-application-type: none
 
 bot:
   name: MiniBankTelegramBot
@@ -13,5 +12,4 @@ ru:
   omon4412:
     services:
       middleservice:
-        url: http://localhost:8080
-
+        url: ${MIDDLE_SERVICE_URL:http://localhost:8080}
