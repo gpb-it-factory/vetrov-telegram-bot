@@ -1,10 +1,9 @@
 package ru.omon4412.minibank.business.service;
 
 import ru.omon4412.minibank.business.dto.UserResponseDto;
-
-import java.util.Optional;
+import ru.omon4412.minibank.business.model.RegistrationResult;
 
 public interface MiddleServiceGateway {
 
-    Optional<Boolean> registerUser(UserResponseDto userResponseDto);
+    RegistrationResult registerUser(UserResponseDto userResponseDto);
 }
