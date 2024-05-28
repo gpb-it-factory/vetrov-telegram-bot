@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.omon4412.minibank.client.MiddleServiceClient;
 import ru.omon4412.minibank.business.command.CommandHandler;
 import ru.omon4412.minibank.business.service.MessageServiceImpl;
 import ru.omon4412.minibank.business.service.MiddleServiceGatewayImpl;
+import ru.omon4412.minibank.client.MiddleServiceClient;
 
 @Component
 @Slf4j
