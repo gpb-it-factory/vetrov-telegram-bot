@@ -11,9 +11,11 @@ import java.util.Map;
 @Component
 public class CommandHandler {
     private final Map<String, Command> commandNameToCommand = new HashMap<>();
+    private final UnknownCommand unknownCommand;
 
     @Autowired
-    public CommandHandler(List<Command> commands) {
+    public CommandHandler(List<Command> commands, UnknownCommand unknownCommand) {
+        this.unknownCommand = unknownCommand;
         for (Command command : commands) {
             commandNameToCommand.put(command.getCommand(), command);
         }
@@ -21,7 +23,7 @@ public class CommandHandler {
 
 
     public void handleCommand(String commandName, Update update) {
-        Command command = commandNameToCommand.getOrDefault(commandName, null);
+        Command command = commandNameToCommand.getOrDefault(commandName, unknownCommand);
         command.execute(update);
     }
 }
