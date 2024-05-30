@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.omon4412.minibank.business.bot.MiniBankBot;
+import ru.omon4412.minibank.bot.MiniBankBot;
 
 @Component
 @RequiredArgsConstructor

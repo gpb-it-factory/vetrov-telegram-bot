@@ -8,8 +8,10 @@ bot:
   name: MiniBankTelegramBot
   token: ${BOT_TOKEN}
 
-ru:
-  omon4412:
-    services:
-      middleservice:
-        url: ${MIDDLE_SERVICE_URL:http://localhost:8080}
+application:
+  middleService:
+    url: ${MIDDLE_SERVICE_URL:http://localhost:8080}
+
+
+
+

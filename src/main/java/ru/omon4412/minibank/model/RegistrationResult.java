@@ -1,4 +1,4 @@
-package ru.omon4412.minibank.business.model;
+package ru.omon4412.minibank.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

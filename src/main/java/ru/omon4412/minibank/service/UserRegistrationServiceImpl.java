@@ -1,24 +1,28 @@
-package ru.omon4412.minibank.business.service;
+package ru.omon4412.minibank.service;
 
 import feign.FeignException;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
-import ru.omon4412.minibank.business.dto.UserResponseDto;
-import ru.omon4412.minibank.business.model.RegistrationResult;
+import org.springframework.stereotype.Service;
 import ru.omon4412.minibank.client.MiddleServiceClient;
+import ru.omon4412.minibank.dto.UserRequestDto;
+import ru.omon4412.minibank.model.RegistrationResult;
 
+@Service
 @RequiredArgsConstructor
+@Primary
 @Slf4j
-public class MiddleServiceGatewayImpl implements MiddleServiceGateway {
+public class UserRegistrationServiceImpl implements UserRegistrationService {
     private final MiddleServiceClient middleServiceClient;
 
     @Override
-    public RegistrationResult registerUser(UserResponseDto userResponseDto) {
-        log.info("Регистрация пользователя {}", userResponseDto.getUserId());
+    public RegistrationResult registerUser(UserRequestDto userRequestDto) {
+        log.info("Регистрация пользователя {}", userRequestDto.getUserId());
         try {
-            ResponseEntity<Void> response = middleServiceClient.registerUser(userResponseDto);
+            ResponseEntity<Void> response = middleServiceClient.registerUser(userRequestDto);
             boolean isSuccessful = response.getStatusCode().is2xxSuccessful();
             log.info("Статус регистрации пользователя: {}", isSuccessful);
             return new RegistrationResult(isSuccessful, getRegistrationMessage(isSuccessful));
