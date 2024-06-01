@@ -3,6 +3,7 @@ package ru.omon4412.minibank.bot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -16,7 +17,7 @@ public class MiniBankBot extends TelegramLongPollingBot {
 
     @Autowired
     public MiniBankBot(@Value("${bot.name}") String botUsername, @Value("${bot.token}") String botToken,
-                       CommandHandler commandHandler) {
+                       @Lazy CommandHandler commandHandler) {
         super(botToken);
         this.botUsername = botUsername;
         this.commandHandler = commandHandler;
