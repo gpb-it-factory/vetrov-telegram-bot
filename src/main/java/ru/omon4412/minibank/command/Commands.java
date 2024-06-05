@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -18,9 +20,9 @@ public enum Commands {
     private final String command;
     private final boolean isMainCommand;
 
-    public static long countOfCommands() {
+    public static List<Commands> getCommands() {
         return Arrays.stream(values())
                 .filter(Commands::isMainCommand)
-                .count();
+                .collect(Collectors.toList());
     }
 }

@@ -2,6 +2,8 @@ package ru.omon4412.minibank.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -12,7 +14,7 @@ import ru.omon4412.minibank.model.TelegramMessage;
 @RequiredArgsConstructor
 @Slf4j
 public class MessageServiceImpl implements MessageService {
-    private final MiniBankBot miniBankBot;
+    private MiniBankBot miniBankBot;
 
     @Override
     public void sendMessage(TelegramMessage event) {
@@ -34,5 +36,10 @@ public class MessageServiceImpl implements MessageService {
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
+    }
+
+    @Autowired
+    public void setMiniBankBot(@Lazy MiniBankBot miniBankBot) {
+        this.miniBankBot = miniBankBot;
     }
 }
