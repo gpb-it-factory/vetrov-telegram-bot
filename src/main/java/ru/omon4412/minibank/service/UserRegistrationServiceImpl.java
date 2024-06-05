@@ -29,7 +29,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
         } catch (FeignException.FeignClientException e) {
             log.warn("Ошибка при вызове MiddleServiceClient {}", e.getMessage());
             return handleFeignException(e);
-        } catch (RetryableException e) {
+        } catch (RetryableException | FeignException.InternalServerError e) {
             log.warn("Ошибка при вызове MiddleServiceClient {}", e.getMessage());
             return new RegistrationResult(false, "Сервис недоступен. Пожалуйста, попробуйте позже.");
         }
