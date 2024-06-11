@@ -18,8 +18,14 @@ public class RegisterCommand implements Command {
     @Override
     public TelegramMessage execute(Update update) {
         Long userId = update.getMessage().getFrom().getId();
+        String username = update.getMessage().getFrom().getUserName();
+        if(username == null) {
+            return new TelegramMessage(update.getMessage().getChatId(),
+                    "Для работы с ботом вам нужен telegram username");
+        }
         UserRequestDto userRequestDto = new UserRequestDto();
         userRequestDto.setUserId(userId);
+        userRequestDto.setUserName(username);
         log.info("Пользователь {} пытается зарегистрироваться", userId);
         RegistrationResult registrationResult = middleServiceGateway.registerUser(userRequestDto);
         log.info("Регистрация пользователя {} завершена. Статус: {}. Сообщение: {}",
