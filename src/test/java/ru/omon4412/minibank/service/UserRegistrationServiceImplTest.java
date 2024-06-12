@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import ru.omon4412.minibank.client.MiddleServiceClient;
 import ru.omon4412.minibank.dto.UserRequestDto;
-import ru.omon4412.minibank.model.RegistrationResult;
+import ru.omon4412.minibank.model.ResponseResult;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -35,7 +35,7 @@ class UserRegistrationServiceImplTest {
         ResponseEntity<Void> responseEntity = ResponseEntity.noContent().build();
         when(middleServiceClient.registerUser(any(UserRequestDto.class))).thenReturn(responseEntity);
 
-        RegistrationResult result = userRegistrationService.registerUser(userRequestDto);
+        ResponseResult result = userRegistrationService.registerUser(userRequestDto);
 
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("Вы зарегистрированы!"));
@@ -52,7 +52,7 @@ class UserRegistrationServiceImplTest {
         when(middleServiceClient.registerUser(any(UserRequestDto.class)))
                 .thenThrow(feignClientException);
 
-        RegistrationResult result = userRegistrationService.registerUser(userRequestDto);
+        ResponseResult result = userRegistrationService.registerUser(userRequestDto);
 
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("Вы уже зарегистрированы."));
@@ -66,7 +66,7 @@ class UserRegistrationServiceImplTest {
         ResponseEntity<Void> responseEntity = ResponseEntity.status(415).build();
         when(middleServiceClient.registerUser(any(UserRequestDto.class))).thenReturn(responseEntity);
 
-        RegistrationResult result = userRegistrationService.registerUser(userRequestDto);
+        ResponseResult result = userRegistrationService.registerUser(userRequestDto);
 
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("Ошибка"));
@@ -79,7 +79,7 @@ class UserRegistrationServiceImplTest {
         UserRequestDto userRequestDto = new UserRequestDto();
         when(middleServiceClient.registerUser(any(UserRequestDto.class))).thenThrow(RetryableException.class);
 
-        RegistrationResult result = userRegistrationService.registerUser(userRequestDto);
+        ResponseResult result = userRegistrationService.registerUser(userRequestDto);
 
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("Сервис недоступен. Пожалуйста, попробуйте позже."));
