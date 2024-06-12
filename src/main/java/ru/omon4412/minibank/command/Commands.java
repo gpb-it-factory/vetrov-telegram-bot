@@ -13,6 +13,7 @@ public enum Commands {
     START("/start", true),
     PING("/ping", true),
     REGISTER("/register", true),
+    CREATEACCOUNT("/createaccount", true),
     // Служебные команды
     DEFAULT("/default", false),
     UNKNOWN("/unknown", false);

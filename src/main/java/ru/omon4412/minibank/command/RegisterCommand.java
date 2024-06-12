@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.omon4412.minibank.dto.UserRequestDto;
-import ru.omon4412.minibank.model.RegistrationResult;
+import ru.omon4412.minibank.model.ResponseResult;
 import ru.omon4412.minibank.model.TelegramMessage;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
 
@@ -19,7 +19,7 @@ public class RegisterCommand implements Command {
     public TelegramMessage execute(Update update) {
         Long userId = update.getMessage().getFrom().getId();
         String username = update.getMessage().getFrom().getUserName();
-        if(username == null) {
+        if (username == null) {
             return new TelegramMessage(update.getMessage().getChatId(),
                     "Для работы с ботом вам нужен telegram username");
         }
@@ -27,10 +27,10 @@ public class RegisterCommand implements Command {
         userRequestDto.setUserId(userId);
         userRequestDto.setUserName(username);
         log.info("Пользователь {} пытается зарегистрироваться", userId);
-        RegistrationResult registrationResult = middleServiceGateway.registerUser(userRequestDto);
+        ResponseResult responseResult = middleServiceGateway.registerUser(userRequestDto);
         log.info("Регистрация пользователя {} завершена. Статус: {}. Сообщение: {}",
-                userId, registrationResult.isSuccess(), registrationResult.getMessage());
-        return new TelegramMessage(update.getMessage().getChatId(), registrationResult.getMessage());
+                userId, responseResult.isSuccess(), responseResult.getMessage());
+        return new TelegramMessage(update.getMessage().getChatId(), responseResult.getMessage());
     }
 
     @Override

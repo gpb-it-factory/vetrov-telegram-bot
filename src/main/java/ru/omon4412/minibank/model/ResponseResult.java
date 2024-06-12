@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class RegistrationResult {
+public class ResponseResult {
     private boolean success;
     private String message;
 }
