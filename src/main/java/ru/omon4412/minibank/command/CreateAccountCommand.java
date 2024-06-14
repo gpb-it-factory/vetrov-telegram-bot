@@ -32,7 +32,7 @@ class CreateAccountCommand implements Command {
         String accountName = messageText.substring((Commands.CREATEACCOUNT.getCommand() + " ").length()).trim();
         if (accountName.isEmpty()) {
             return new TelegramMessage(update.getMessage().getChatId(),
-                    "Пожалуйста, укажите название аккаунта.");
+                    "Пожалуйста, укажите название счёта.");
         }
 
         NewAccountDto newAccountDto = new NewAccountDto();
