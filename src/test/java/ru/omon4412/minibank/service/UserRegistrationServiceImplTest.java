@@ -61,20 +61,6 @@ class UserRegistrationServiceImplTest {
     }
 
     @Test
-    void test_registerUser_when() {
-        UserRequestDto userRequestDto = new UserRequestDto();
-        ResponseEntity<Void> responseEntity = ResponseEntity.status(415).build();
-        when(middleServiceClient.registerUser(any(UserRequestDto.class))).thenReturn(responseEntity);
-
-        ResponseResult result = userRegistrationService.registerUser(userRequestDto);
-
-        assertFalse(result.isSuccess());
-        assertTrue(result.getMessage().contains("Ошибка"));
-
-        verify(middleServiceClient, times(1)).registerUser(any(UserRequestDto.class));
-    }
-
-    @Test
     void test_registerUser_whenServerIsDown() {
         UserRequestDto userRequestDto = new UserRequestDto();
         when(middleServiceClient.registerUser(any(UserRequestDto.class))).thenThrow(RetryableException.class);

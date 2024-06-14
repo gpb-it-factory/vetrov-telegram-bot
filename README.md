@@ -16,7 +16,7 @@
 @startuml
 
 actor User as user
-participant "Telegram-bot" as frontend
+participant "Telegram-bot" as frontend #red
 participant "middle" as middle
 participant "backend" as backend
 

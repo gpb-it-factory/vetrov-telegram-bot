@@ -67,4 +67,16 @@ class AccountServiceImplTest {
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("Сначала нужно зарегистрироваться."));
     }
+
+    @Test
+    void test_whenServiceIsNotAvailable() {
+        FeignException.InternalServerError feignClientException = new FeignException.InternalServerError(
+                "Сервис недоступен. Пожалуйста, попробуйте позже.", Request.create(Request.HttpMethod.POST, "/users/1/accounts", Map.of(), new byte[0],
+                StandardCharsets.UTF_8), null, null);
+        when(middleServiceClient.createAccount(any(NewAccountDto.class), any(Long.class)))
+                .thenThrow(feignClientException);
+        ResponseResult result = accountServiceImpl.createAccount(new NewAccountDto(), 1L);
+        assertFalse(result.isSuccess());
+        assertTrue(result.getMessage().contains("Сервис недоступен. Пожалуйста, попробуйте позже."));
+    }
 }
