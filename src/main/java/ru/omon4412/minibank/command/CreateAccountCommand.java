@@ -23,20 +23,21 @@ class CreateAccountCommand implements Command {
         }
 
         String messageText = update.getMessage().getText();
-        if (messageText == null || !messageText.startsWith(Commands.CREATEACCOUNT.getCommand() + " ")) {
+        String createAccountCommand = Commands.CREATEACCOUNT.getCommand();
+
+        if (messageText == null || !messageText.startsWith(createAccountCommand)) {
             return new TelegramMessage(update.getMessage().getChatId(),
                     "Неправильный формат команды. Используйте: "
-                            + Commands.CREATEACCOUNT.getCommand() + " [название]");
+                            + createAccountCommand + " или " + createAccountCommand + " [название]");
         }
 
-        String accountName = messageText.substring((Commands.CREATEACCOUNT.getCommand() + " ").length()).trim();
-        if (accountName.isEmpty()) {
-            return new TelegramMessage(update.getMessage().getChatId(),
-                    "Пожалуйста, укажите название счёта.");
-        }
+        String[] parts = messageText.split(" ", 2);
+        String accountName = parts.length > 1 ? parts[1].trim() : null;
 
         NewAccountDto newAccountDto = new NewAccountDto();
-        newAccountDto.setAccountName(accountName);
+        if (accountName != null && !accountName.isEmpty()) {
+            newAccountDto.setAccountName(accountName);
+        }
 
         ResponseResult responseResult = middleServiceGateway.createAccount(newAccountDto, userId);
         return new TelegramMessage(update.getMessage().getChatId(), responseResult.getMessage());
