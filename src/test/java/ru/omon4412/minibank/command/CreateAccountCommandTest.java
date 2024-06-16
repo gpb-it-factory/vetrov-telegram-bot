@@ -34,29 +34,24 @@ class CreateAccountCommandTest {
     }
 
     @Test
-    void test_ExecuteWithWrongFormat() {
-        Update update = mockUpdate("testuser", "/createaccount", 1L);
-
-        TelegramMessage result = createAccountCommand.execute(update);
-
-        assertEquals("Неправильный формат команды. Используйте: /createaccount [название]", result.message());
-    }
-
-    @Test
-    void test_ExecuteWithEmptyAccountName() {
-        Update update = mockUpdate("testuser", "/createaccount ", 1L);
-
-        TelegramMessage result = createAccountCommand.execute(update);
-
-        assertEquals("Пожалуйста, укажите название счёта.", result.message());
-    }
-
-    @Test
-    void test_ExecuteWithValidData() {
+    void test_ExecuteWithAccountName() {
         Update update = mockUpdate("testuser", "/createaccount На отдых", 1L);
         ResponseResult responseResult = new ResponseResult(true, "Счёт создан успешно");
         NewAccountDto newAccountDto = new NewAccountDto();
         newAccountDto.setAccountName("На отдых");
+        when(middleServiceGateway.createAccount(newAccountDto, 0L))
+                .thenReturn(responseResult);
+
+        TelegramMessage result = createAccountCommand.execute(update);
+
+        assertEquals("Счёт создан успешно", result.message());
+    }
+
+    @Test
+    void test_ExecuteWithoutAccountName() {
+        Update update = mockUpdate("testuser", "/createaccount", 1L);
+        ResponseResult responseResult = new ResponseResult(true, "Счёт создан успешно");
+        NewAccountDto newAccountDto = new NewAccountDto();
         when(middleServiceGateway.createAccount(newAccountDto, 0L))
                 .thenReturn(responseResult);
 
