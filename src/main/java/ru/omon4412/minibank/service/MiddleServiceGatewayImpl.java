@@ -29,7 +29,7 @@ public class MiddleServiceGatewayImpl implements MiddleServiceGateway {
     }
 
     @Override
-    public Collection<ResponseAccountDto> getUserAccounts(Long userId) {
+    public Result<Collection<ResponseAccountDto>> getUserAccounts(Long userId) {
         return accountService.getUserAccounts(userId);
     }
 }
