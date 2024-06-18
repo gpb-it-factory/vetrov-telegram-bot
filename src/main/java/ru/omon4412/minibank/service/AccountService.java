@@ -9,5 +9,5 @@ import java.util.Collection;
 public interface AccountService {
     Result<String> createAccount(NewAccountDto newAccountDto, Long userId);
 
-    Collection<ResponseAccountDto> getUserAccounts(Long userId);
+    Result<Collection<ResponseAccountDto>> getUserAccounts(Long userId);
 }

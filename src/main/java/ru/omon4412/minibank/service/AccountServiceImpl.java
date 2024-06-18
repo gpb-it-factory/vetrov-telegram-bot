@@ -30,11 +30,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Collection<ResponseAccountDto> getUserAccounts(Long userId) {
-        return null;
+    public Result<Collection<ResponseAccountDto>> getUserAccounts(Long userId) {
+        try {
+            ResponseEntity<Collection<ResponseAccountDto>> response = middleServiceClient.getUserAccounts(userId);
+            return new Result.Success<>(response.getBody());
+        } catch (FeignException.FeignClientException e) {
+            return handleFeignException(e);
+        } catch (RetryableException | FeignException.InternalServerError e) {
+            return new Result.Failure<>(new Throwable("Сервис недоступен. Пожалуйста, попробуйте позже."));
+        }
     }
 
-    private Result<String> handleFeignException(FeignException.FeignClientException e) {
+    private Result handleFeignException(FeignException.FeignClientException e) {
         if (e.status() == 409) {
             return new Result.Failure<>(new Exception("У Вас уже есть счет"));
         }

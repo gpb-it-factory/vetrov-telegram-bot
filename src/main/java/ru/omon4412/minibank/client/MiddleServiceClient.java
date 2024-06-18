@@ -21,5 +21,5 @@ public interface MiddleServiceClient {
     ResponseEntity<Void> createAccount(NewAccountDto newAccountDto, @PathVariable("id") Long userId);
 
     @GetMapping("/users/{id}/accounts")
-    ResponseEntity<Collection<ResponseAccountDto>> getAccounts(@PathVariable("id") Long userId);
+    ResponseEntity<Collection<ResponseAccountDto>> getUserAccounts(@PathVariable("id") Long userId);
 }
