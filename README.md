@@ -51,6 +51,7 @@ deactivate user
 >- /ping - Получение ответного pong 
 >- /register - Регистрация нового клиента
 >- /createaccount - Создание нового счёта
+>- /currentbalance - Запрос баланса
 
 # Локальный запуск
 >Windows:

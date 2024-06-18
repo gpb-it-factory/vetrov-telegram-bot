@@ -10,12 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import ru.omon4412.minibank.client.MiddleServiceClient;
 import ru.omon4412.minibank.dto.NewAccountDto;
-import ru.omon4412.minibank.model.ResponseResult;
+import ru.omon4412.minibank.util.Result;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -34,10 +33,10 @@ class AccountServiceImplTest {
         ResponseEntity<Void> responseEntity = ResponseEntity.noContent().build();
         when(middleServiceClient.createAccount(any(NewAccountDto.class), any(Long.class))).thenReturn(responseEntity);
 
-        ResponseResult result = accountServiceImpl.createAccount(newAccountDto, 1L);
+        Result<String> result = accountServiceImpl.createAccount(newAccountDto, 1L);
 
         assertTrue(result.isSuccess());
-        assertTrue(result.getMessage().contains("Счёт успешно создан"));
+        assertTrue(result.getOrNull().contains("Счёт успешно создан"));
 
         verify(middleServiceClient, times(1)).createAccount(any(NewAccountDto.class), any(Long.class));
     }
@@ -50,10 +49,10 @@ class AccountServiceImplTest {
         when(middleServiceClient.createAccount(any(NewAccountDto.class), any(Long.class)))
                 .thenThrow(feignClientException);
 
-        ResponseResult result = accountServiceImpl.createAccount(new NewAccountDto(), 1L);
+        Result<String> result = accountServiceImpl.createAccount(new NewAccountDto(), 1L);
 
-        assertFalse(result.isSuccess());
-        assertTrue(result.getMessage().contains("У Вас уже есть счет"));
+        assertTrue(result.isFailure());
+        assertTrue(result.exceptionOrNull().getMessage().contains("У Вас уже есть счет"));
     }
 
     @Test
@@ -63,9 +62,9 @@ class AccountServiceImplTest {
                 StandardCharsets.UTF_8), null, null);
         when(middleServiceClient.createAccount(any(NewAccountDto.class), any(Long.class)))
                 .thenThrow(feignClientException);
-        ResponseResult result = accountServiceImpl.createAccount(new NewAccountDto(), 1L);
-        assertFalse(result.isSuccess());
-        assertTrue(result.getMessage().contains("Сначала нужно зарегистрироваться."));
+        Result<String> result = accountServiceImpl.createAccount(new NewAccountDto(), 1L);
+        assertTrue(result.isFailure());
+        assertTrue(result.exceptionOrNull().getMessage().contains("Сначала нужно зарегистрироваться."));
     }
 
     @Test
@@ -75,8 +74,8 @@ class AccountServiceImplTest {
                 StandardCharsets.UTF_8), null, null);
         when(middleServiceClient.createAccount(any(NewAccountDto.class), any(Long.class)))
                 .thenThrow(feignClientException);
-        ResponseResult result = accountServiceImpl.createAccount(new NewAccountDto(), 1L);
-        assertFalse(result.isSuccess());
-        assertTrue(result.getMessage().contains("Сервис недоступен. Пожалуйста, попробуйте позже."));
+        Result<String> result = accountServiceImpl.createAccount(new NewAccountDto(), 1L);
+        assertTrue(result.isFailure());
+        assertTrue(result.exceptionOrNull().getMessage().contains("Сервис недоступен. Пожалуйста, попробуйте позже."));
     }
 }

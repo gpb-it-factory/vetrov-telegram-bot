@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.omon4412.minibank.dto.NewAccountDto;
+import ru.omon4412.minibank.dto.ResponseAccountDto;
 import ru.omon4412.minibank.dto.UserRequestDto;
-import ru.omon4412.minibank.model.ResponseResult;
+import ru.omon4412.minibank.util.Result;
+
+import java.util.Collection;
 
 @Component
 @RequiredArgsConstructor
@@ -16,12 +19,17 @@ public class MiddleServiceGatewayImpl implements MiddleServiceGateway {
     private final AccountService accountService;
 
     @Override
-    public ResponseResult registerUser(UserRequestDto userRequestDto) {
+    public Result<String> registerUser(UserRequestDto userRequestDto) {
         return userRegistrationService.registerUser(userRequestDto);
     }
 
     @Override
-    public ResponseResult createAccount(NewAccountDto newAccountDto, Long userId) {
+    public Result<String> createAccount(NewAccountDto newAccountDto, Long userId) {
         return accountService.createAccount(newAccountDto, userId);
+    }
+
+    @Override
+    public Collection<ResponseAccountDto> getUserAccounts(Long userId) {
+        return accountService.getUserAccounts(userId);
     }
 }

@@ -9,9 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.omon4412.minibank.dto.NewAccountDto;
-import ru.omon4412.minibank.model.ResponseResult;
 import ru.omon4412.minibank.model.TelegramMessage;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
+import ru.omon4412.minibank.util.Result;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -36,7 +36,7 @@ class CreateAccountCommandTest {
     @Test
     void test_ExecuteWithAccountName() {
         Update update = mockUpdate("testuser", "/createaccount На отдых", 1L);
-        ResponseResult responseResult = new ResponseResult(true, "Счёт создан успешно");
+        Result<String> responseResult = new Result.Success<>("Счёт создан успешно");
         NewAccountDto newAccountDto = new NewAccountDto();
         newAccountDto.setAccountName("На отдых");
         when(middleServiceGateway.createAccount(newAccountDto, 0L))
@@ -50,7 +50,7 @@ class CreateAccountCommandTest {
     @Test
     void test_ExecuteWithoutAccountName() {
         Update update = mockUpdate("testuser", "/createaccount", 1L);
-        ResponseResult responseResult = new ResponseResult(true, "Счёт создан успешно");
+        Result<String> responseResult = new Result.Success<>("Счёт создан успешно");
         NewAccountDto newAccountDto = new NewAccountDto();
         when(middleServiceGateway.createAccount(newAccountDto, 0L))
                 .thenReturn(responseResult);
