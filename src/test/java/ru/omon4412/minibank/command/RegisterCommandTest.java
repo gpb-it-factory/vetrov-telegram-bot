@@ -9,9 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.omon4412.minibank.dto.UserRequestDto;
-import ru.omon4412.minibank.model.ResponseResult;
 import ru.omon4412.minibank.model.TelegramMessage;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
+import ru.omon4412.minibank.util.Result;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +31,7 @@ class RegisterCommandTest {
         UserRequestDto userRequestDto = new UserRequestDto();
         userRequestDto.setUserId(1L);
         userRequestDto.setUserName("testuser");
-        ResponseResult responseResult = new ResponseResult(true, "Вы зарегистрированы!");
+        Result<String> responseResult = new Result.Success<>("Вы зарегистрированы!");
 
         when(middleServiceGateway.registerUser(any(UserRequestDto.class))).thenReturn(responseResult);
 

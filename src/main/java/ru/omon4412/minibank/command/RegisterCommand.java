@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.omon4412.minibank.dto.UserRequestDto;
-import ru.omon4412.minibank.model.ResponseResult;
 import ru.omon4412.minibank.model.TelegramMessage;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
+import ru.omon4412.minibank.util.Result;
 
 @Component
 @RequiredArgsConstructor
@@ -27,10 +27,16 @@ public class RegisterCommand implements Command {
         userRequestDto.setUserId(userId);
         userRequestDto.setUserName(username);
         log.info("Пользователь {} пытается зарегистрироваться", userId);
-        ResponseResult responseResult = middleServiceGateway.registerUser(userRequestDto);
+        Result<String> responseResult = middleServiceGateway.registerUser(userRequestDto);
+        String message;
+        if (responseResult.isFailure()) {
+            message = responseResult.exceptionOrNull().getMessage();
+        } else {
+            message = responseResult.getOrNull();
+        }
         log.info("Регистрация пользователя {} завершена. Статус: {}. Сообщение: {}",
-                userId, responseResult.isSuccess(), responseResult.getMessage());
-        return new TelegramMessage(update.getMessage().getChatId(), responseResult.getMessage());
+                userId, responseResult.isSuccess(), message);
+        return new TelegramMessage(update.getMessage().getChatId(), message);
     }
 
     @Override

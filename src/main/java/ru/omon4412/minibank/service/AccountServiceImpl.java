@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.omon4412.minibank.client.MiddleServiceClient;
 import ru.omon4412.minibank.dto.NewAccountDto;
-import ru.omon4412.minibank.model.ResponseResult;
+import ru.omon4412.minibank.dto.ResponseAccountDto;
+import ru.omon4412.minibank.util.Result;
+
+import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -15,25 +18,29 @@ public class AccountServiceImpl implements AccountService {
     private final MiddleServiceClient middleServiceClient;
 
     @Override
-    public ResponseResult createAccount(NewAccountDto newAccountDto, Long userId) {
+    public Result<String> createAccount(NewAccountDto newAccountDto, Long userId) {
         try {
-            ResponseEntity<Void> response = middleServiceClient.createAccount(newAccountDto, userId);
-            boolean isSuccessful = response.getStatusCode().is2xxSuccessful();
-            return new ResponseResult(isSuccessful, "Счёт успешно создан");
+            middleServiceClient.createAccount(newAccountDto, userId);
+            return new Result.Success<>("Счёт успешно создан");
         } catch (FeignException.FeignClientException e) {
             return handleFeignException(e);
         } catch (RetryableException | FeignException.InternalServerError e) {
-            return new ResponseResult(false, "Сервис недоступен. Пожалуйста, попробуйте позже.");
+            return new Result.Failure<>(new Exception("Сервис недоступен. Пожалуйста, попробуйте позже."));
         }
     }
 
-    private ResponseResult handleFeignException(FeignException.FeignClientException e) {
+    @Override
+    public Collection<ResponseAccountDto> getUserAccounts(Long userId) {
+        return null;
+    }
+
+    private Result<String> handleFeignException(FeignException.FeignClientException e) {
         if (e.status() == 409) {
-            return new ResponseResult(false, "У Вас уже есть счет");
+            return new Result.Failure<>(new Exception("У Вас уже есть счет"));
         }
         if (e.status() == 404) {
-            return new ResponseResult(false, "Сначала нужно зарегистрироваться.");
+            return new Result.Failure<>(new Exception("Сначала нужно зарегистрироваться."));
         }
-        return new ResponseResult(false, "Ошибка");
+        return new Result.Failure<>(new Exception("Ошибка"));
     }
 }

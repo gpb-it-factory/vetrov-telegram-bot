@@ -14,6 +14,7 @@ public enum Commands {
     PING("/ping", true),
     REGISTER("/register", true),
     CREATEACCOUNT("/createaccount", true),
+    CURRENTBALANCE("/currentbalance", true),
     // Служебные команды
     DEFAULT("/default", false),
     UNKNOWN("/unknown", false);
