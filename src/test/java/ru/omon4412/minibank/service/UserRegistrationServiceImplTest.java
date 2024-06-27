@@ -10,12 +10,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import ru.omon4412.minibank.client.MiddleServiceClient;
+import ru.omon4412.minibank.dto.UserIdResponseDto;
 import ru.omon4412.minibank.dto.UserRequestDto;
 import ru.omon4412.minibank.util.Result;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -47,7 +49,7 @@ class UserRegistrationServiceImplTest {
         UserRequestDto userRequestDto = new UserRequestDto();
         FeignException.FeignClientException feignClientException = new FeignException.FeignClientException(
                 409, "Conflict", Request.create(Request.HttpMethod.POST, "/register", Map.of(), new byte[0],
-                StandardCharsets.UTF_8), null, null);
+                StandardCharsets.UTF_8, null), null, null);
         when(middleServiceClient.registerUser(any(UserRequestDto.class)))
                 .thenThrow(feignClientException);
 
@@ -70,5 +72,16 @@ class UserRegistrationServiceImplTest {
         assertTrue(result.exceptionOrNull().getMessage().contains("Сервис недоступен. Пожалуйста, попробуйте позже."));
 
         verify(middleServiceClient, times(1)).registerUser(any(UserRequestDto.class));
+    }
+
+    @Test
+    void test_getUserIdByUserName_success() {
+        ResponseEntity<UserIdResponseDto> responseEntity = ResponseEntity.ok(new UserIdResponseDto(123L));
+        when(middleServiceClient.getUserIdByUserName(any(String.class))).thenReturn(responseEntity);
+
+        Result<UserIdResponseDto> result = userRegistrationService.getUserIdByUserName("username");
+
+        assertTrue(result.isSuccess());
+        assertEquals(123L, (long) result.getOrNull().getUserId());
     }
 }

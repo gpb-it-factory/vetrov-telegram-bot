@@ -15,6 +15,7 @@ public enum Commands {
     REGISTER("/register", true),
     CREATEACCOUNT("/createaccount", true),
     CURRENTBALANCE("/currentbalance", true),
+    TRANSFER("/transfer", true),
     // Служебные команды
     DEFAULT("/default", false),
     UNKNOWN("/unknown", false);

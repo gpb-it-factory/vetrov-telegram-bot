@@ -47,9 +47,9 @@ class CurrentBalanceCommandTest {
 
         String expectedMessage = "Ваши активные счета:\n" +
                 line +
-                " - Test - 5000 рублей\n" +
+                " - Test - 5000.0 рублей\n" +
                 line +
-                "Сумма по счетам: 5000 рублей\n";
+                "Сумма по счетам: 5000.0 рублей\n";
         assertEquals(expectedMessage, result.message());
     }
 
@@ -77,10 +77,10 @@ class CurrentBalanceCommandTest {
 
         String expectedMessage = "Ваши активные счета:\n" +
                 line +
-                " - Test1 - 5000 рублей\n" +
-                " - Test2 - 7000 рублей\n" +
+                " - Test1 - 5000.0 рублей\n" +
+                " - Test2 - 7000.0 рублей\n" +
                 line +
-                "Сумма по счетам: 12000 рублей\n";
+                "Сумма по счетам: 12000.0 рублей\n";
         assertEquals(expectedMessage, result.message());
     }
 
