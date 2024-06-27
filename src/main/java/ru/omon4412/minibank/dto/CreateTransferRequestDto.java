@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewAccountDto {
-    private String accountName;
+public class CreateTransferRequestDto {
+    private String from;
+    private String to;
+    private double amount;
 }

@@ -4,5 +4,5 @@ import ru.omon4412.minibank.model.TelegramMessage;
 
 public interface MessageService {
 
-    void sendMessage(TelegramMessage event);
+    void sendMessage(TelegramMessage telegramMessage);
 }

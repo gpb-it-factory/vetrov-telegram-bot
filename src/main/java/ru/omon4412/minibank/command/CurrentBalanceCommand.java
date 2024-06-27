@@ -44,7 +44,7 @@ class CurrentBalanceCommand implements Command {
                 }
                 message.append("--------------------------------------------\n");
                 message.append("Сумма по счетам: ");
-                message.append(accounts.stream().mapToLong(ResponseAccountDto::getAmount).sum());
+                message.append(accounts.stream().mapToDouble(ResponseAccountDto::getAmount).sum());
                 message.append(" рублей\n");
             }
         }

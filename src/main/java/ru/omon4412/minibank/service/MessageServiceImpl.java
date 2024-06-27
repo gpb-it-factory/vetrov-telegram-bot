@@ -17,9 +17,9 @@ public class MessageServiceImpl implements MessageService {
     private MiniBankBot miniBankBot;
 
     @Override
-    public void sendMessage(TelegramMessage event) {
-        Long chatId = event.chatId();
-        String message = event.message();
+    public void sendMessage(TelegramMessage telegramMessage) {
+        Long chatId = telegramMessage.chatId();
+        String message = telegramMessage.message();
 
         if (message.isBlank()) {
             log.warn("Получено пустое сообщение");
