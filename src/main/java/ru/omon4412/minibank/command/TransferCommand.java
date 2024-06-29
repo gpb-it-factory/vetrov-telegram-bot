@@ -11,6 +11,8 @@ import ru.omon4412.minibank.service.MessageService;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
 import ru.omon4412.minibank.util.Result;
 
+import java.math.BigDecimal;
+
 @Component
 @RequiredArgsConstructor
 class TransferCommand implements Command {
@@ -42,14 +44,14 @@ class TransferCommand implements Command {
         }
         String toTelegramUser = parts[1].trim();
         String amount = parts[2].trim();
-        double amountDouble;
+        BigDecimal amountDouble;
         try {
-            amountDouble = Double.parseDouble(amount);
+            amountDouble = new BigDecimal(amount);
         } catch (NumberFormatException e) {
             return notValidTelegramMessage;
         }
 
-        if (amountDouble <= 0) {
+        if (amountDouble.compareTo(BigDecimal.ZERO) <= 0) {
             return new TelegramMessage(update.getMessage().getChatId(),
                     "Сумма перевода должна быть больше нуля");
         }

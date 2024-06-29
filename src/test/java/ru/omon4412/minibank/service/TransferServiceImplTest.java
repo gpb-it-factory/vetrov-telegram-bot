@@ -16,6 +16,7 @@ import ru.omon4412.minibank.dto.TransferResponseDto;
 import ru.omon4412.minibank.model.ApiError;
 import ru.omon4412.minibank.util.Result;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -57,7 +58,7 @@ class TransferServiceImplTest {
         CreateTransferRequestDto createTransferRequestDto = new CreateTransferRequestDto();
         createTransferRequestDto.setFrom("1");
         createTransferRequestDto.setTo("2");
-        createTransferRequestDto.setAmount(50);
+        createTransferRequestDto.setAmount(new BigDecimal(50));
         ApiError apiError = new ApiError("Счёт не найден", "/transfers", 404, LocalDateTime.now());
         String errorBody = "{\"error\":\"Пользователь не найден\"}";
         when(objectMapper.readValue(errorBody, ApiError.class)).thenReturn(apiError);
@@ -74,7 +75,7 @@ class TransferServiceImplTest {
 
     @Test
     void test_transfer_whenUserDoesNotExist() throws JsonProcessingException {
-        CreateTransferRequestDto createTransferRequestDto = new CreateTransferRequestDto("user1", "user2", 100.00);
+        CreateTransferRequestDto createTransferRequestDto = new CreateTransferRequestDto("user1", "user2", new BigDecimal(100));
 
         ApiError apiError = new ApiError("Пользователь не найден", "/transfers", 404, LocalDateTime.now());
         String errorBody = "{\"error\":\"Пользователь не найден\"}";
@@ -94,7 +95,7 @@ class TransferServiceImplTest {
 
     @Test
     void test_transfer_whenServerIsNotAvailable() {
-        CreateTransferRequestDto createTransferRequestDto = new CreateTransferRequestDto("user1", "user2", 100.00);
+        CreateTransferRequestDto createTransferRequestDto = new CreateTransferRequestDto("user1", "user2", new BigDecimal(100));
 
         FeignException.InternalServerError feignClientException = new FeignException.InternalServerError(
                 "Сервис недоступен. Пожалуйста, попробуйте позже.", Request.create(Request.HttpMethod.POST, "/users/1/accounts", Map.of(), new byte[0],

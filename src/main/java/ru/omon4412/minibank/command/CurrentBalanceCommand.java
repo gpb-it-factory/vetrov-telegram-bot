@@ -8,6 +8,7 @@ import ru.omon4412.minibank.model.TelegramMessage;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
 import ru.omon4412.minibank.util.Result;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 @Component
@@ -44,7 +45,9 @@ class CurrentBalanceCommand implements Command {
                 }
                 message.append("--------------------------------------------\n");
                 message.append("Сумма по счетам: ");
-                message.append(accounts.stream().mapToDouble(ResponseAccountDto::getAmount).sum());
+                message.append(accounts.stream()
+                        .map(ResponseAccountDto::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add));
                 message.append(" рублей\n");
             }
         }
