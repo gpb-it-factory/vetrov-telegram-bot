@@ -19,6 +19,7 @@ import ru.omon4412.minibank.util.Result;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ class TransferServiceImplTest {
         createTransferRequestDto.setFrom("1");
         createTransferRequestDto.setTo("2");
         createTransferRequestDto.setAmount(new BigDecimal(50));
-        ApiError apiError = new ApiError("Счёт не найден", "/transfers", 404, LocalDateTime.now());
+        ApiError apiError = new ApiError("Счёт не найден", "/transfers", 404, ZonedDateTime.now());
         String errorBody = "{\"error\":\"Пользователь не найден\"}";
         when(objectMapper.readValue(errorBody, ApiError.class)).thenReturn(apiError);
         FeignException.FeignClientException feignClientException = new FeignException.FeignClientException(
@@ -77,7 +78,7 @@ class TransferServiceImplTest {
     void test_transfer_whenUserDoesNotExist() throws JsonProcessingException {
         CreateTransferRequestDto createTransferRequestDto = new CreateTransferRequestDto("user1", "user2", new BigDecimal(100));
 
-        ApiError apiError = new ApiError("Пользователь не найден", "/transfers", 404, LocalDateTime.now());
+        ApiError apiError = new ApiError("Пользователь не найден", "/transfers", 404, ZonedDateTime.now());
         String errorBody = "{\"error\":\"Пользователь не найден\"}";
         when(objectMapper.readValue(errorBody, ApiError.class)).thenReturn(apiError);
 
