@@ -25,12 +25,16 @@ class RegisterCommandTest {
     @InjectMocks
     private RegisterCommand registerCommand;
 
-    @Test
-    void test_ExecuteWithValidUsername() {
-        Update update = mockUpdate("testuser", 1L);
+    private static void getValidUserRequestDto() {
         UserRequestDto userRequestDto = new UserRequestDto();
         userRequestDto.setUserId(1L);
         userRequestDto.setUserName("testuser");
+    }
+
+    @Test
+    void executeWithValidUsername() {
+        Update update = mockUpdate("testuser", 1L);
+        getValidUserRequestDto();
         Result<String> responseResult = new Result.Success<>("Вы зарегистрированы!");
 
         when(middleServiceGateway.registerUser(any(UserRequestDto.class))).thenReturn(responseResult);
@@ -42,7 +46,7 @@ class RegisterCommandTest {
     }
 
     @Test
-    void test_ExecuteWithoutUsername() {
+    void executeWithoutUsername() {
         Update update = mockUpdate(null, 1L);
 
         TelegramMessage result = registerCommand.execute(update);

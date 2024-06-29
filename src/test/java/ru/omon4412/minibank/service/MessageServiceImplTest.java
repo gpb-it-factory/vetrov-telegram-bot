@@ -23,7 +23,7 @@ class MessageServiceImplTest {
     private MessageServiceImpl messageService;
 
     @Test
-    void test_sendMessage_success() throws TelegramApiException {
+    void sendMessage_success() throws TelegramApiException {
         TelegramMessage event = new TelegramMessage(1L, "Test");
         Message message = new Message();
         when(miniBankBot.execute(any(SendMessage.class))).thenReturn(message);
@@ -34,7 +34,7 @@ class MessageServiceImplTest {
     }
 
     @Test
-    void test_sendMessage_whenMessageIsBlank() throws TelegramApiException {
+    void sendMessage_failed_whenMessageIsBlank() throws TelegramApiException {
         TelegramMessage event = new TelegramMessage(1L, "    ");
 
         messageService.sendMessage(event);

@@ -29,15 +29,46 @@ class CurrentBalanceCommandTest {
     @InjectMocks
     private CurrentBalanceCommand currentBalanceCommand;
 
-    @Test
-    public void test_SuccessfulGetUserAccount() {
-        Update update = mockUpdate("testuser", "/currentbalance", 1L);
+    private static Collection<ResponseAccountDto> getTwoValidResponseAccountDtos() {
         Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
-        ResponseAccountDto responseAccountDto = new ResponseAccountDto();
-        responseAccountDto.setAccountName("Test");
-        responseAccountDto.setAccountId("TestId");
-        responseAccountDto.setAmount(new BigDecimal(5000));
-        responseAccountDtos.add(responseAccountDto);
+        ResponseAccountDto responseAccountDto1 = new ResponseAccountDto();
+        responseAccountDto1.setAccountName("Test1");
+        responseAccountDto1.setAccountId("TestId1");
+        responseAccountDto1.setAmount(new BigDecimal(5000));
+        ResponseAccountDto responseAccountDto2 = new ResponseAccountDto();
+        responseAccountDto2.setAccountName("Test2");
+        responseAccountDto2.setAccountId("TestId2");
+        responseAccountDto2.setAmount(new BigDecimal(7000));
+        responseAccountDtos.add(responseAccountDto1);
+        responseAccountDtos.add(responseAccountDto2);
+        return responseAccountDtos;
+    }
+
+    @Test
+    void userGetBalance_successful_whenZeroUserAccounts() {
+        Update update = mockUpdate("testuser", "/currentbalance", 1L);
+        Result<Collection<ResponseAccountDto>> responseResult = new Result.Success<>(Collections.emptyList());
+
+        when(middleServiceGateway.getUserAccounts(anyLong()))
+                .thenReturn(responseResult);
+        TelegramMessage result = currentBalanceCommand.execute(update);
+
+        assertEquals("Нет активных счетов.", result.message());
+    }
+
+    @Test
+    void userGetBalance_failed_executeWithoutUsername() {
+        Update update = mockUpdate(null, "/currentbalance", 1L);
+
+        TelegramMessage result = currentBalanceCommand.execute(update);
+
+        assertEquals("Для работы с ботом вам нужен telegram username", result.message());
+    }
+
+    @Test
+    public void userGetBalance_successful_getUserAccount() {
+        Update update = mockUpdate("testuser", "/currentbalance", 1L);
+        Collection<ResponseAccountDto> responseAccountDtos = getValidResponseAccountDtos();
 
         Result<Collection<ResponseAccountDto>> responseResult = new Result.Success<>(responseAccountDtos);
 
@@ -55,14 +86,9 @@ class CurrentBalanceCommandTest {
     }
 
     @Test
-    public void test_SuccessfulGetUserAccount_ifAmountNotInteger() {
+    public void userGetBalance_successful_getUserAccount_ifAmountNotInteger() {
         Update update = mockUpdate("testuser", "/currentbalance", 1L);
-        Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
-        ResponseAccountDto responseAccountDto = new ResponseAccountDto();
-        responseAccountDto.setAccountName("Test");
-        responseAccountDto.setAccountId("TestId");
-        responseAccountDto.setAmount(new BigDecimal("5000.99"));
-        responseAccountDtos.add(responseAccountDto);
+        Collection<ResponseAccountDto> responseAccountDtos = getValidResponseAccountDtosWithNotIntegerAmount();
 
         Result<Collection<ResponseAccountDto>> responseResult = new Result.Success<>(responseAccountDtos);
 
@@ -80,19 +106,9 @@ class CurrentBalanceCommandTest {
     }
 
     @Test
-    public void test_SuccessfulGet2UserAccounts() {
+    public void userGetBalance_SuccessfulGet2UserAccounts() {
         Update update = mockUpdate("testuser", "/currentbalance", 1L);
-        Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
-        ResponseAccountDto responseAccountDto1 = new ResponseAccountDto();
-        responseAccountDto1.setAccountName("Test1");
-        responseAccountDto1.setAccountId("TestId1");
-        responseAccountDto1.setAmount(new BigDecimal(5000));
-        ResponseAccountDto responseAccountDto2 = new ResponseAccountDto();
-        responseAccountDto2.setAccountName("Test2");
-        responseAccountDto2.setAccountId("TestId2");
-        responseAccountDto2.setAmount(new BigDecimal(7000));
-        responseAccountDtos.add(responseAccountDto1);
-        responseAccountDtos.add(responseAccountDto2);
+        Collection<ResponseAccountDto> responseAccountDtos = getTwoValidResponseAccountDtos();
 
         Result<Collection<ResponseAccountDto>> responseResult = new Result.Success<>(responseAccountDtos);
 
@@ -110,25 +126,24 @@ class CurrentBalanceCommandTest {
         assertEquals(expectedMessage, result.message());
     }
 
-    @Test
-    void test_SuccessfulWhenZeroUserAccounts() {
-        Update update = mockUpdate("testuser", "/currentbalance", 1L);
-        Result<Collection<ResponseAccountDto>> responseResult = new Result.Success<>(Collections.emptyList());
-
-        when(middleServiceGateway.getUserAccounts(anyLong()))
-                .thenReturn(responseResult);
-        TelegramMessage result = currentBalanceCommand.execute(update);
-
-        assertEquals("Нет активных счетов.", result.message());
+    private Collection<ResponseAccountDto> getValidResponseAccountDtosWithNotIntegerAmount() {
+        Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
+        ResponseAccountDto responseAccountDto = new ResponseAccountDto();
+        responseAccountDto.setAccountName("Test");
+        responseAccountDto.setAccountId("TestId");
+        responseAccountDto.setAmount(new BigDecimal("5000.99"));
+        responseAccountDtos.add(responseAccountDto);
+        return responseAccountDtos;
     }
 
-    @Test
-    void test_ExecuteWithoutUsername() {
-        Update update = mockUpdate(null, "/currentbalance", 1L);
-
-        TelegramMessage result = currentBalanceCommand.execute(update);
-
-        assertEquals("Для работы с ботом вам нужен telegram username", result.message());
+    private Collection<ResponseAccountDto> getValidResponseAccountDtos() {
+        Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
+        ResponseAccountDto responseAccountDto = new ResponseAccountDto();
+        responseAccountDto.setAccountName("Test");
+        responseAccountDto.setAccountId("TestId");
+        responseAccountDto.setAmount(new BigDecimal(5000));
+        responseAccountDtos.add(responseAccountDto);
+        return responseAccountDtos;
     }
 
     private Update mockUpdate(String username, String text, Long chatId) {

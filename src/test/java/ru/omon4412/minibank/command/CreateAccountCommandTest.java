@@ -25,7 +25,7 @@ class CreateAccountCommandTest {
     private CreateAccountCommand createAccountCommand;
 
     @Test
-    void test_ExecuteWithoutUsername() {
+    void userCreateAccount_failed_ExecuteWithoutUsername() {
         Update update = mockUpdate(null, "/createaccount На отдых", 1L);
 
         TelegramMessage result = createAccountCommand.execute(update);
@@ -34,7 +34,7 @@ class CreateAccountCommandTest {
     }
 
     @Test
-    void test_ExecuteWithAccountName() {
+    void userCreateAccount_success_ExecuteWithAccountName() {
         Update update = mockUpdate("testuser", "/createaccount На отдых", 1L);
         Result<String> responseResult = new Result.Success<>("Счёт создан успешно");
         NewAccountDto newAccountDto = new NewAccountDto();
@@ -48,7 +48,7 @@ class CreateAccountCommandTest {
     }
 
     @Test
-    void test_ExecuteWithoutAccountName() {
+    void userCreateAccount_success_ExecuteWithoutAccountName() {
         Update update = mockUpdate("testuser", "/createaccount", 1L);
         Result<String> responseResult = new Result.Success<>("Счёт создан успешно");
         NewAccountDto newAccountDto = new NewAccountDto();
