@@ -35,7 +35,7 @@ class CommandHandlerTest {
     }
 
     @Test
-    void test_HandleKnownCommand() {
+    void HandleKnownCommand() {
         Update update = new Update();
         TelegramMessage telegramMessage = new TelegramMessage(1L, "/doanything");
 
@@ -48,7 +48,7 @@ class CommandHandlerTest {
     }
 
     @Test
-    void test_HandleUnknownCommand() {
+    void HandleUnknownCommand() {
         Update update = new Update();
         TelegramMessage telegramMessage = new TelegramMessage(1L, "/testest");
 
@@ -61,7 +61,7 @@ class CommandHandlerTest {
     }
 
     @Test
-    void test_DuplicateCommandHandlerInitialization() {
+    void DuplicateCommandHandlerInitializationFailed() {
         Command duplicateCommand = mock(Command.class);
         when(duplicateCommand.getCommand()).thenReturn("/doanything");
 
