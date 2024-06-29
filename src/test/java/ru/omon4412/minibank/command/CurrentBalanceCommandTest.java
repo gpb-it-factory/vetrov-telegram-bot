@@ -13,6 +13,7 @@ import ru.omon4412.minibank.model.TelegramMessage;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
 import ru.omon4412.minibank.util.Result;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +36,7 @@ class CurrentBalanceCommandTest {
         ResponseAccountDto responseAccountDto = new ResponseAccountDto();
         responseAccountDto.setAccountName("Test");
         responseAccountDto.setAccountId("TestId");
-        responseAccountDto.setAmount(5000L);
+        responseAccountDto.setAmount(new BigDecimal(5000));
         responseAccountDtos.add(responseAccountDto);
 
         Result<Collection<ResponseAccountDto>> responseResult = new Result.Success<>(responseAccountDtos);
@@ -47,9 +48,34 @@ class CurrentBalanceCommandTest {
 
         String expectedMessage = "Ваши активные счета:\n" +
                 line +
-                " - Test - 5000.0 рублей\n" +
+                " - Test - 5000 рублей\n" +
                 line +
-                "Сумма по счетам: 5000.0 рублей\n";
+                "Сумма по счетам: 5000 рублей\n";
+        assertEquals(expectedMessage, result.message());
+    }
+
+    @Test
+    public void test_SuccessfulGetUserAccount_ifAmountNotInteger() {
+        Update update = mockUpdate("testuser", "/currentbalance", 1L);
+        Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
+        ResponseAccountDto responseAccountDto = new ResponseAccountDto();
+        responseAccountDto.setAccountName("Test");
+        responseAccountDto.setAccountId("TestId");
+        responseAccountDto.setAmount(new BigDecimal("5000.99"));
+        responseAccountDtos.add(responseAccountDto);
+
+        Result<Collection<ResponseAccountDto>> responseResult = new Result.Success<>(responseAccountDtos);
+
+        when(middleServiceGateway.getUserAccounts(anyLong()))
+                .thenReturn(responseResult);
+
+        TelegramMessage result = currentBalanceCommand.execute(update);
+
+        String expectedMessage = "Ваши активные счета:\n" +
+                line +
+                " - Test - 5000.99 рублей\n" +
+                line +
+                "Сумма по счетам: 5000.99 рублей\n";
         assertEquals(expectedMessage, result.message());
     }
 
@@ -60,11 +86,11 @@ class CurrentBalanceCommandTest {
         ResponseAccountDto responseAccountDto1 = new ResponseAccountDto();
         responseAccountDto1.setAccountName("Test1");
         responseAccountDto1.setAccountId("TestId1");
-        responseAccountDto1.setAmount(5000L);
+        responseAccountDto1.setAmount(new BigDecimal(5000));
         ResponseAccountDto responseAccountDto2 = new ResponseAccountDto();
         responseAccountDto2.setAccountName("Test2");
         responseAccountDto2.setAccountId("TestId2");
-        responseAccountDto2.setAmount(7000L);
+        responseAccountDto2.setAmount(new BigDecimal(7000));
         responseAccountDtos.add(responseAccountDto1);
         responseAccountDtos.add(responseAccountDto2);
 
@@ -77,10 +103,10 @@ class CurrentBalanceCommandTest {
 
         String expectedMessage = "Ваши активные счета:\n" +
                 line +
-                " - Test1 - 5000.0 рублей\n" +
-                " - Test2 - 7000.0 рублей\n" +
+                " - Test1 - 5000 рублей\n" +
+                " - Test2 - 7000 рублей\n" +
                 line +
-                "Сумма по счетам: 12000.0 рублей\n";
+                "Сумма по счетам: 12000 рублей\n";
         assertEquals(expectedMessage, result.message());
     }
 

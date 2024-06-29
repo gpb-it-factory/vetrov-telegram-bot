@@ -13,6 +13,7 @@ import ru.omon4412.minibank.dto.NewAccountDto;
 import ru.omon4412.minibank.dto.ResponseAccountDto;
 import ru.omon4412.minibank.util.Result;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,7 +94,7 @@ class AccountServiceImplTest {
         ResponseAccountDto responseAccountDto = new ResponseAccountDto();
         responseAccountDto.setAccountName("Test");
         responseAccountDto.setAccountId("TestId");
-        responseAccountDto.setAmount(5000L);
+        responseAccountDto.setAmount(new BigDecimal(5000));
         responseAccountDtos.add(responseAccountDto);
         ResponseEntity<Collection<ResponseAccountDto>> responseEntity = ResponseEntity.ok(responseAccountDtos);
         when(middleServiceClient.getUserAccounts(any(Long.class))).thenReturn(responseEntity);
