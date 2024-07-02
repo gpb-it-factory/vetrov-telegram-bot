@@ -3,9 +3,7 @@ package ru.omon4412.minibank.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.omon4412.minibank.dto.NewAccountDto;
-import ru.omon4412.minibank.dto.ResponseAccountDto;
-import ru.omon4412.minibank.dto.UserRequestDto;
+import ru.omon4412.minibank.dto.*;
 import ru.omon4412.minibank.util.Result;
 
 import java.util.Collection;
@@ -17,10 +15,16 @@ public class MiddleServiceGatewayImpl implements MiddleServiceGateway {
 
     private final UserRegistrationService userRegistrationService;
     private final AccountService accountService;
+    private final TransferService transferService;
 
     @Override
     public Result<String> registerUser(UserRequestDto userRequestDto) {
         return userRegistrationService.registerUser(userRequestDto);
+    }
+
+    @Override
+    public Result<UserIdResponseDto> getUserIdByUserName(String username) {
+        return userRegistrationService.getUserIdByUserName(username);
     }
 
     @Override
@@ -31,5 +35,10 @@ public class MiddleServiceGatewayImpl implements MiddleServiceGateway {
     @Override
     public Result<Collection<ResponseAccountDto>> getUserAccounts(Long userId) {
         return accountService.getUserAccounts(userId);
+    }
+
+    @Override
+    public Result<TransferResponseDto> transfer(CreateTransferRequestDto createTransferRequestDto) {
+        return transferService.transfer(createTransferRequestDto);
     }
 }

@@ -1,5 +1,8 @@
 package ru.omon4412.minibank.command;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,12 +28,28 @@ class RegisterCommandTest {
     @InjectMocks
     private RegisterCommand registerCommand;
 
+    @Mock
+    private MeterRegistry meterRegistry;
+    @Mock
+    private Counter registerCommandCounter;
+
+    @Mock
+    private Counter registerCommandErrorCounter;
+
+    @BeforeEach
+    void setup() {
+        meterRegistry = mock(MeterRegistry.class);
+        registerCommandCounter = mock(Counter.class);
+        registerCommandErrorCounter = mock(Counter.class);
+        when(meterRegistry.counter("commands.register.errors")).thenReturn(registerCommandErrorCounter);
+        when(meterRegistry.counter("commands.register.executions")).thenReturn(registerCommandCounter);
+        registerCommand = new RegisterCommand(middleServiceGateway, meterRegistry);
+    }
+
     @Test
-    void test_ExecuteWithValidUsername() {
+    void executeWithValidUsername() {
         Update update = mockUpdate("testuser", 1L);
-        UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setUserId(1L);
-        userRequestDto.setUserName("testuser");
+        getValidUserRequestDto();
         Result<String> responseResult = new Result.Success<>("Вы зарегистрированы!");
 
         when(middleServiceGateway.registerUser(any(UserRequestDto.class))).thenReturn(responseResult);
@@ -42,13 +61,19 @@ class RegisterCommandTest {
     }
 
     @Test
-    void test_ExecuteWithoutUsername() {
+    void executeWithoutUsername() {
         Update update = mockUpdate(null, 1L);
 
         TelegramMessage result = registerCommand.execute(update);
 
         assertEquals("Для работы с ботом вам нужен telegram username", result.message());
         verify(middleServiceGateway, never()).registerUser(any(UserRequestDto.class));
+    }
+
+    private void getValidUserRequestDto() {
+        UserRequestDto userRequestDto = new UserRequestDto();
+        userRequestDto.setUserId(1L);
+        userRequestDto.setUserName("testuser");
     }
 
     private Update mockUpdate(String username, Long userId) {

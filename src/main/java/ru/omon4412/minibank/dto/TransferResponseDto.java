@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewAccountDto {
-    private String accountName;
+public class TransferResponseDto {
+    private String transferId;
 }

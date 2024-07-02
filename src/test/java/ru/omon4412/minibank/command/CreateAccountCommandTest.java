@@ -1,5 +1,9 @@
 package ru.omon4412.minibank.command;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,14 +22,27 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateAccountCommandTest {
+
+    @Mock
+    private MeterRegistry meterRegistry;
+    @Mock
+    private Counter createAccountCommandCounter;
     @Mock
     private MiddleServiceGateway middleServiceGateway;
 
     @InjectMocks
     private CreateAccountCommand createAccountCommand;
 
+    @BeforeEach
+    void setup() {
+        meterRegistry = mock(MeterRegistry.class);
+        createAccountCommandCounter = mock(Counter.class);
+        when(meterRegistry.counter("commands.createAccount.executions")).thenReturn(createAccountCommandCounter);
+        createAccountCommand = new CreateAccountCommand(middleServiceGateway, meterRegistry);
+    }
+
     @Test
-    void test_ExecuteWithoutUsername() {
+    void userCreateAccount_failed_ExecuteWithoutUsername() {
         Update update = mockUpdate(null, "/createaccount На отдых", 1L);
 
         TelegramMessage result = createAccountCommand.execute(update);
@@ -34,7 +51,7 @@ class CreateAccountCommandTest {
     }
 
     @Test
-    void test_ExecuteWithAccountName() {
+    void userCreateAccount_success_ExecuteWithAccountName() {
         Update update = mockUpdate("testuser", "/createaccount На отдых", 1L);
         Result<String> responseResult = new Result.Success<>("Счёт создан успешно");
         NewAccountDto newAccountDto = new NewAccountDto();
@@ -48,7 +65,7 @@ class CreateAccountCommandTest {
     }
 
     @Test
-    void test_ExecuteWithoutAccountName() {
+    void userCreateAccount_success_ExecuteWithoutAccountName() {
         Update update = mockUpdate("testuser", "/createaccount", 1L);
         Result<String> responseResult = new Result.Success<>("Счёт создан успешно");
         NewAccountDto newAccountDto = new NewAccountDto();

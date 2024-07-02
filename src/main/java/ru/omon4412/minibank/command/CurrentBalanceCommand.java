@@ -1,6 +1,7 @@
 package ru.omon4412.minibank.command;
 
-import lombok.RequiredArgsConstructor;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.omon4412.minibank.dto.ResponseAccountDto;
@@ -8,12 +9,18 @@ import ru.omon4412.minibank.model.TelegramMessage;
 import ru.omon4412.minibank.service.MiddleServiceGateway;
 import ru.omon4412.minibank.util.Result;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 @Component
-@RequiredArgsConstructor
 class CurrentBalanceCommand implements Command {
     private final MiddleServiceGateway middleServiceGateway;
+    private final Counter currentBalanceCommandCounter;
+
+    CurrentBalanceCommand(MiddleServiceGateway middleServiceGateway, MeterRegistry meterRegistry) {
+        this.middleServiceGateway = middleServiceGateway;
+        this.currentBalanceCommandCounter = meterRegistry.counter("commands.currentBalance.executions");
+    }
 
     @Override
     public TelegramMessage execute(Update update) {
@@ -44,10 +51,13 @@ class CurrentBalanceCommand implements Command {
                 }
                 message.append("--------------------------------------------\n");
                 message.append("Сумма по счетам: ");
-                message.append(accounts.stream().mapToLong(ResponseAccountDto::getAmount).sum());
+                message.append(accounts.stream()
+                        .map(ResponseAccountDto::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add));
                 message.append(" рублей\n");
             }
         }
+        currentBalanceCommandCounter.increment();
         return new TelegramMessage(update.getMessage().getChatId(), message.toString());
     }
 

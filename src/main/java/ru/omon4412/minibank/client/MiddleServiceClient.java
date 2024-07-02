@@ -5,9 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import ru.omon4412.minibank.dto.NewAccountDto;
-import ru.omon4412.minibank.dto.ResponseAccountDto;
-import ru.omon4412.minibank.dto.UserRequestDto;
+import ru.omon4412.minibank.dto.*;
 
 import java.util.Collection;
 
@@ -22,4 +20,10 @@ public interface MiddleServiceClient {
 
     @GetMapping("/users/{id}/accounts")
     ResponseEntity<Collection<ResponseAccountDto>> getUserAccounts(@PathVariable("id") Long userId);
+
+    @PostMapping("/transfers")
+    ResponseEntity<TransferResponseDto> transfer(CreateTransferRequestDto createTransferRequestDto);
+
+    @GetMapping("/users/{id}")
+    ResponseEntity<UserIdResponseDto> getUserIdByUserName(@PathVariable("id") String username);
 }
