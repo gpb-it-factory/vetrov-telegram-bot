@@ -1,5 +1,8 @@
 package ru.omon4412.minibank.command;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,20 +31,17 @@ class CurrentBalanceCommandTest {
     private MiddleServiceGateway middleServiceGateway;
     @InjectMocks
     private CurrentBalanceCommand currentBalanceCommand;
+    @Mock
+    private MeterRegistry meterRegistry;
+    @Mock
+    private Counter currentBalanceCommandCounter;
 
-    private static Collection<ResponseAccountDto> getTwoValidResponseAccountDtos() {
-        Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
-        ResponseAccountDto responseAccountDto1 = new ResponseAccountDto();
-        responseAccountDto1.setAccountName("Test1");
-        responseAccountDto1.setAccountId("TestId1");
-        responseAccountDto1.setAmount(new BigDecimal(5000));
-        ResponseAccountDto responseAccountDto2 = new ResponseAccountDto();
-        responseAccountDto2.setAccountName("Test2");
-        responseAccountDto2.setAccountId("TestId2");
-        responseAccountDto2.setAmount(new BigDecimal(7000));
-        responseAccountDtos.add(responseAccountDto1);
-        responseAccountDtos.add(responseAccountDto2);
-        return responseAccountDtos;
+    @BeforeEach
+    void setup() {
+        meterRegistry = mock(MeterRegistry.class);
+        currentBalanceCommandCounter = mock(Counter.class);
+        when(meterRegistry.counter("commands.currentBalance.executions")).thenReturn(currentBalanceCommandCounter);
+        currentBalanceCommand = new CurrentBalanceCommand(middleServiceGateway, meterRegistry);
     }
 
     @Test
@@ -124,6 +124,21 @@ class CurrentBalanceCommandTest {
                 line +
                 "Сумма по счетам: 12000 рублей\n";
         assertEquals(expectedMessage, result.message());
+    }
+
+    private Collection<ResponseAccountDto> getTwoValidResponseAccountDtos() {
+        Collection<ResponseAccountDto> responseAccountDtos = new ArrayList<>();
+        ResponseAccountDto responseAccountDto1 = new ResponseAccountDto();
+        responseAccountDto1.setAccountName("Test1");
+        responseAccountDto1.setAccountId("TestId1");
+        responseAccountDto1.setAmount(new BigDecimal(5000));
+        ResponseAccountDto responseAccountDto2 = new ResponseAccountDto();
+        responseAccountDto2.setAccountName("Test2");
+        responseAccountDto2.setAccountId("TestId2");
+        responseAccountDto2.setAmount(new BigDecimal(7000));
+        responseAccountDtos.add(responseAccountDto1);
+        responseAccountDtos.add(responseAccountDto2);
+        return responseAccountDtos;
     }
 
     private Collection<ResponseAccountDto> getValidResponseAccountDtosWithNotIntegerAmount() {
