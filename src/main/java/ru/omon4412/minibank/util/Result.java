@@ -8,6 +8,25 @@ public abstract class Result<T> {
     private Result() {
     }
 
+    @Getter
+    public static final class Success<T> extends Result<T> {
+        private final T data;
+
+        public Success(T data) {
+            this.data = data;
+        }
+
+    }
+
+    @Getter
+    public static final class Failure<T> extends Result<T> {
+        private final Throwable error;
+
+        public Failure(@Nonnull Throwable error) {
+            this.error = error;
+        }
+    }
+
     public boolean isSuccess() {
         return this instanceof Success;
     }
@@ -29,25 +48,6 @@ public abstract class Result<T> {
             return ((Failure<T>) this).getError();
         } else {
             return null;
-        }
-    }
-
-    @Getter
-    public static final class Success<T> extends Result<T> {
-        private final T data;
-
-        public Success(T data) {
-            this.data = data;
-        }
-
-    }
-
-    @Getter
-    public static final class Failure<T> extends Result<T> {
-        private final Throwable error;
-
-        public Failure(@Nonnull Throwable error) {
-            this.error = error;
         }
     }
 }

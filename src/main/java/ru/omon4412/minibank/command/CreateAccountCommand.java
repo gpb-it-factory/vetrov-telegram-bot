@@ -1,6 +1,7 @@
 package ru.omon4412.minibank.command;
 
-import lombok.RequiredArgsConstructor;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.omon4412.minibank.dto.NewAccountDto;
@@ -9,9 +10,14 @@ import ru.omon4412.minibank.service.MiddleServiceGateway;
 import ru.omon4412.minibank.util.Result;
 
 @Component
-@RequiredArgsConstructor
 class CreateAccountCommand implements Command {
     private final MiddleServiceGateway middleServiceGateway;
+    private final Counter createAccountCommandCounter;
+
+    public CreateAccountCommand(MiddleServiceGateway middleServiceGateway, MeterRegistry meterRegistry) {
+        this.middleServiceGateway = middleServiceGateway;
+        this.createAccountCommandCounter = meterRegistry.counter("commands.createAccount.executions");
+    }
 
     @Override
     public TelegramMessage execute(Update update) {
@@ -46,6 +52,7 @@ class CreateAccountCommand implements Command {
         } else {
             message = createAccountResult.getOrNull();
         }
+        createAccountCommandCounter.increment();
         return new TelegramMessage(update.getMessage().getChatId(), message);
     }
 
